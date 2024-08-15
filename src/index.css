@@ -1,0 +1,204 @@
+body,
+button,
+input {
+  font-family: "Bellota-Regular", sans-serif;
+}
+
+body {
+  max-width: 800px;
+  margin: 0 auto;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(14, 18, 42, 1) 50%,
+    rgba(0, 0, 0) 100%
+  );
+  color: white;
+}
+
+main {
+  margin-top: var(--size-2);
+}
+
+main,
+.flex-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-row {
+  display: flex;
+  margin-bottom: var(--size-1);
+}
+
+.card {
+  font-weight: bold;
+  display: flex;
+  flex-wrap: wrap;
+  width: var(--size-px-9);
+  height: var(--size-px-10);
+  border: 1px solid var(--camo-11);
+  margin: 0 var(--size-1);
+  border-radius: var(--radius-3);
+  justify-content: center;
+  align-content: center;
+}
+
+.card-small {
+  width: var(--size-px-9);
+  height: var(--size-px-10);
+  border-radius: var(--radius-3);
+  margin: 0 0.05rem;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: "Vintage Propagandist";
+}
+
+p {
+  margin-top: var(--size-1);
+  margin-bottom: var(--size-1);
+}
+
+button {
+  color: var(--camo-2);
+  background-color: var(--camo-11);
+  border: 1px solid var(--camo-12);
+  text-shadow: 0 1px 0 var(--camo-12);
+  font-size: 1em;
+  padding: 0.2rem 0.5rem;
+
+  &:hover {
+    background-color: var(--camo-6);
+  }
+
+  &:disabled {
+    color: var(--gray-3);
+    background-color: var(--gray-6);
+  }
+}
+
+.modal {
+  position: absolute;
+  border: 1px solid var(--gray-0);
+  background-color: var(--gray-12);
+  left: 0;
+  right: 0;
+  top: 30vh;
+  margin: 0 auto;
+  width: 30vw;
+  padding: 0.5em;
+}
+
+input[type="range"] {
+  appearance: none;
+  /* creating a custom design */
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+
+  /*  styling the track  */
+  height: 8px;
+  background-color: var(--camo-1);
+  overflow: hidden;
+
+  &::range-track {
+    height: 8px;
+    background-color: var(--camo-1);
+  }
+
+  &::range-thumb {
+    appearance: none;
+    /* creating a custom design */
+    height: 8px;
+    width: 8px;
+    background-color: var(--camo-11);
+    box-shadow: -400px 0 0 400px var(--camo-3);
+  }
+}
+
+#cultists {
+  background: var(--green-1);
+  &::range-track {
+    background: var(--green-1);
+  }
+}
+#cultists::range-thumb {
+  background-color: var(--green-11);
+  box-shadow: -400px 0 0 400px var(--green-5);
+}
+
+@font-face {
+  font-family: "Vintage Propagandist";
+  src: local("Vintage Propagandist"),
+    url("./assets/fonts/Vintage Propagandist.ttf");
+}
+
+@font-face {
+  font-family: "Bellota-Regular";
+  src: local("Bellota-Regular"), url("./assets/fonts/Bellota-Regular.otf");
+}
+
+.player-list,
+.card-list {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+
+  > div {
+    padding-left: var(--size-1);
+    padding-right: var(--size-1);
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+  }
+}
+
+.reveal-card-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--size-2);
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.investigator {
+  color: var(--yellow-4);
+}
+
+.cultist {
+  color: var(--green-7);
+}
+
+.rune {
+  color: var(--gray-5);
+}
+
+.elder-sign {
+  color: var(--yellow-4);
+}
+
+.cthulhu {
+  color: var(--red-5);
+}
+
+ul {
+  list-style-type: none;
+  padding-inline-start: 0;
+}
+
+.player-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > * {
+    margin: 0 var(--size-1);
+  }
+}
