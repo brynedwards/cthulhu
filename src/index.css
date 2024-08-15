@@ -1,3 +1,7 @@
+:root {
+  --range-height: 15px;
+}
+
 body,
 button,
 input {
@@ -25,6 +29,7 @@ main,
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .card-row {
@@ -52,6 +57,23 @@ main,
   margin: 0 0.05rem;
 }
 
+main > h1,
+main > p {
+  text-align: center;
+}
+
+h1 {
+  font-size: var(--size-7);
+}
+
+h2 {
+  font-size: var(--size-5);
+}
+
+p {
+  font-size: var(--size-3);
+}
+
 h1,
 h2,
 h3,
@@ -70,8 +92,9 @@ button {
   background-color: var(--camo-11);
   border: 1px solid var(--camo-12);
   text-shadow: 0 1px 0 var(--camo-12);
-  font-size: 1em;
-  padding: 0.2rem 0.5rem;
+  font-size: 1.3rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-2);
 
   &:hover {
     background-color: var(--camo-6);
@@ -80,6 +103,16 @@ button {
   &:disabled {
     color: var(--gray-3);
     background-color: var(--gray-6);
+  }
+
+  &.green {
+    color: var(--green-2);
+    background-color: var(--green-11);
+
+    &:disabled {
+      color: var(--gray-3);
+      background-color: var(--gray-6);
+    }
   }
 }
 
@@ -95,28 +128,35 @@ button {
   padding: 0.5em;
 }
 
+input[type="text"] {
+  margin-bottom: var(--size-1);
+  height: 2rem;
+  width: 16rem;
+  border: 1px solid var(--camo-5);
+}
+
 input[type="range"] {
   appearance: none;
   /* creating a custom design */
-  width: 100%;
+  width: 95%;
   cursor: pointer;
   outline: none;
 
   /*  styling the track  */
-  height: 8px;
+  height: var(--range-height);
   background-color: var(--camo-1);
   overflow: hidden;
 
   &::range-track {
-    height: 8px;
+    height: var(--range-height);
     background-color: var(--camo-1);
   }
 
   &::range-thumb {
     appearance: none;
     /* creating a custom design */
-    height: 8px;
-    width: 8px;
+    height: var(--range-height);
+    width: var(--range-height);
     background-color: var(--camo-11);
     box-shadow: -400px 0 0 400px var(--camo-3);
   }
@@ -201,4 +241,9 @@ ul {
   > * {
     margin: 0 var(--size-1);
   }
+}
+
+.pool-form {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
 }

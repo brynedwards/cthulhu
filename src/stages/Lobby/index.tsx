@@ -41,40 +41,26 @@ const Lobby: Component = (props: Props) => {
   return (
     <>
       <h1>Don't Mess With Cthulhu!</h1>
-      <p>
+      <p style="margin-bottom: var(--size-4)">
         This is an "offline" version where the game is played on a single
         device.
       </p>
       <CharacterPool />
-      <h4 style="margin-top: var(--size-7); margin-bottom: var(--size-2)">
-        Add Player
-      </h4>
-      <div class="player-form">
-        <label for="name">Name</label>
-        <input
-          style="margin: var(--size-1) 0"
-          ref={nameInput}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              add();
-            }
-          }}
-          id="name"
-          type="text"
-        />
-        <button onClick={() => add()}>Add</button>
-      </div>
       <h3 style="margin-top: var(--size-4)">Players</h3>
       <Show when={Players.get().length > 0}>
         <div class="player-list">
           <For each={Players.get()}>
             {(p, index) => (
               <>
-                <div>
+                <div style="font-size: 1.5rem">
                   {index() + 1}. {p.name}
                 </div>
                 <div>
-                  <button onClick={() => remove(index())}>Remove</button>
+                  <button
+                    onClick={() => remove(index())}
+                  >
+                    Remove
+                  </button>
                 </div>
               </>
             )}
@@ -99,7 +85,22 @@ const Lobby: Component = (props: Props) => {
           <strong>Not enough investigators and cultists</strong>
         </p>
       </Show>
+      <h4 style="margin-top: var(--size-7); margin-bottom: var(--size-2)">
+        Add Players
+      </h4>
+      <input
+        ref={nameInput}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            add();
+          }
+        }}
+        id="name"
+        type="text"
+      />
+      <button onClick={() => add()}>Add</button>
       <button
+        class="green"
         style="margin-top: var(--size-1)"
         disabled={Players.count() < 4}
         onClick={() => start()}

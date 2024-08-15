@@ -26,12 +26,10 @@ export default () => {
   return (
     <>
       <h2>Character Pool</h2>
-      <div style="display: inline-grid; grid-template-columns: auto auto auto;">
-        <div>
+        <div style="margin-top: var(--size-3)">
           <label for="investigators">Investigators</label>
+        <span style="margin: 0 1em">{investigatorCount()}</span>
         </div>
-        <div style="margin: 0 1em">{investigatorCount()}</div>
-        <div>
           <RangeInput
             id="investigators"
             value={investigatorCount()}
@@ -40,12 +38,10 @@ export default () => {
             disabled={maxPlayers() < 4}
             bind={setInvestigatorCount}
           />
-        </div>
-        <div>
+        <div style="margin-top: var(--size-3)">
           <label for="cultists">Cultists</label>
+        <span style="margin: 0 1em">{cultistCount()}</span>
         </div>
-        <div style="margin: 0 1em">{cultistCount()}</div>
-        <div>
           <RangeInput
             id="cultists"
             value={cultistCount()}
@@ -54,8 +50,6 @@ export default () => {
             disabled={maxPlayers() < 4}
             bind={setCultistCount}
           />
-        </div>
-      </div>
     </>
   );
 };
