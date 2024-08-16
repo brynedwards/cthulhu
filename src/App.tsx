@@ -22,7 +22,7 @@ const App: Component = () => {
       <Show when={stage() !== Stage.Lobby}>
         <button
           style="margin-top: var(--size-5)"
-          onClick={() => setExiting(true)}
+          onClick={() => (stage() === Stage.End ? exit() : setExiting(true))}
         >
           Exit
         </button>
