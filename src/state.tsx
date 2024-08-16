@@ -123,7 +123,9 @@ export function StateProvider(props: ParentProps<State>) {
     });
     setActivePlayerIndex(null);
     setRound(1);
-    setPlayedCards(Map({ [Card.Rune]: 0, [Card.ElderSign]: 0, [Card.Cthulhu]: 0 }));
+    setPlayedCards(
+      Map({ [Card.Rune]: 0, [Card.ElderSign]: 0, [Card.Cthulhu]: 0 }),
+    );
   };
 
   const state = {

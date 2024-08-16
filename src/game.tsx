@@ -15,8 +15,6 @@ export enum Card {
 
 export interface Player {
   name: string;
-  // Makes it easier to select player in round
-  idx: number;
   team: Accessor<Team>;
   setTeam: Setter<Team>;
   Cards: {

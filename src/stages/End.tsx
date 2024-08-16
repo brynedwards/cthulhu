@@ -34,9 +34,13 @@ const End: Component = (_props: StageProps) => {
         <h1 class={toCssClass(winner)}>{winner}s win!</h1>
         <h2>{msg()}</h2>
       </Show>
-      <h3 class="investigator" style="margin-top: 1em">Investigators</h3>
+      <h3 class="investigator" style="margin-top: 1em">
+        Investigators
+      </h3>
       <For each={investigators}>{(p) => <strong>{p.name}</strong>}</For>
-      <h3 class="cultist" style="margin-top: 1em">Cultists</h3>
+      <h3 class="cultist" style="margin-top: 1em">
+        Cultists
+      </h3>
       <For each={cultists}>{(p) => <strong>{p.name}</strong>}</For>
     </>
   );

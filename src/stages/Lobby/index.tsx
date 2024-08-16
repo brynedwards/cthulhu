@@ -56,11 +56,7 @@ const Lobby: Component = (props: Props) => {
                   {index() + 1}. {p.name}
                 </div>
                 <div>
-                  <button
-                    onClick={() => remove(index())}
-                  >
-                    Remove
-                  </button>
+                  <button onClick={() => remove(index())}>Remove</button>
                 </div>
               </>
             )}
