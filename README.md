@@ -1,4 +1,4 @@
-Digital version of [Don't Mess With Cthulhu]
+Digital version of [Don't Mess With Cthulhu](https://boardgamegeek.com/boardgame/253786/dont-mess-with-cthulhu-deluxe).
 
 This is an "offline" version where the game is played on a single device. You can play it [here].
 
