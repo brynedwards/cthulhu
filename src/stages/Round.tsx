@@ -76,9 +76,9 @@ const Round: Component = (props: StageProps) => {
       <p>
         {msg()[0]} {msg()[1]}
       </p>
-      <p>
+      <h2>
         <strong>{Players.active().name}</strong>'s turn
-      </p>
+      </h2>
       <For each={Players.get()}>
         {(p, i) => (
           <>

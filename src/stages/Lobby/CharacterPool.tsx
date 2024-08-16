@@ -27,8 +27,7 @@ export default () => {
     <>
       <h2>Character Pool</h2>
         <div style="margin-top: var(--size-3)">
-          <label for="investigators">Investigators</label>
-        <span style="margin: 0 1em">{investigatorCount()}</span>
+          <label for="investigators">Investigators: {investigatorCount()}</label>
         </div>
           <RangeInput
             id="investigators"
@@ -39,8 +38,7 @@ export default () => {
             bind={setInvestigatorCount}
           />
         <div style="margin-top: var(--size-3)">
-          <label for="cultists">Cultists</label>
-        <span style="margin: 0 1em">{cultistCount()}</span>
+          <label for="cultists">Cultists: {cultistCount()}</label>
         </div>
           <RangeInput
             id="cultists"
