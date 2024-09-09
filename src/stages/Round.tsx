@@ -10,7 +10,7 @@ const Round: Component = (props: StageProps) => {
   const [msg, setMsg] = createSignal(["", ""]);
   const [turn, setTurn] = createSignal(1);
   const [revealing, setRevealing] = createSignal(false);
-  let lastRevealed = null;
+  let revealed = null;
   let chosenPlayer = null;
   const keyDownEvent = useKeyDownEvent();
 
@@ -24,18 +24,17 @@ const Round: Component = (props: StageProps) => {
     const verb = verbs[Math.floor(Math.random() * verbs.length)];
     setMsg([p.name, `${verb} ${a}${n} ${card}!`]);
     setRevealing(true);
-    lastRevealed = card;
+    revealed = card;
     chosenPlayer = i;
   }
 
   function nextMove() {
-    console.log("Elder Signs:", Revealed.elderSigns());
-    console.log("Player count:", Players.count());
     if (
-      lastRevealed === Card.Cthulhu ||
+      revealed === Card.Cthulhu ||
       Revealed.elderSigns() === Players.count()
     ) {
       props.setStage(Stage.End);
+      return;
     }
     // Set player p as active player
     Players.setActive(chosenPlayer);
