@@ -110,10 +110,10 @@ export function StateProvider(props: ParentProps<State>) {
           p.Cards.add(Card.Rune);
         }
       }
-
-      // Pick a random player to start
-      setActivePlayerIndex(Math.floor(Math.random() * playerCount()));
     });
+
+    // Pick a random player to start
+    setActivePlayerIndex(Math.floor(Math.random() * playerCount()));
   };
 
   const reset = () => {

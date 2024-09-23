@@ -5,8 +5,7 @@ import { useState } from "./state";
 import { debug } from "./util";
 
 const App: Component = () => {
-  const { Players } = useState();
-  const { reset } = useState();
+  const { Players, reset } = useState();
   const [stage, setStage] = createSignal(Stage.Lobby);
   const [exiting, setExiting] = createSignal(false);
 
