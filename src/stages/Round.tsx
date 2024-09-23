@@ -6,8 +6,8 @@ import { Stage, StageProps } from ".";
 
 const verbs = ["found", "discovered", "unearthed"];
 const Round: Component = (props: StageProps) => {
-  const { removeCardFrom, setState, state } = useState();
-  const { active, players, round, revealed } = state;
+  const { active, removeCardFrom, setState, state } = useState();
+  const { players, round } = state;
   const [msg, setMsg] = createSignal(["", ""]);
   const [turn, setTurn] = createSignal(1);
   const [revealing, setRevealing] = createSignal(false);
@@ -30,7 +30,7 @@ const Round: Component = (props: StageProps) => {
   function nextMove() {
     if (
       lastRevealed === Card.Cthulhu ||
-      revealed.get(Card.ElderSign) === players.length
+      state.revealed.get(Card.ElderSign) === players.length
     ) {
       props.setStage(Stage.End);
       return;
@@ -51,7 +51,6 @@ const Round: Component = (props: StageProps) => {
   }
 
   createEffect(() => {
-    console.log({ runes: revealed.get(Card.Rune), revealed });
     if (!revealing()) return;
     const e = keyDownEvent();
     if (e !== null && e.key === "Enter") {
@@ -68,15 +67,15 @@ const Round: Component = (props: StageProps) => {
       <strong>Revealed cards</strong>
       <div class="card-list">
         <div>Runes</div>
-        <div>{revealed.get(Card.Rune)}</div>
+        <div>{state.revealed.get(Card.Rune)}</div>
         <div>Elder Signs</div>
-        <div>{revealed.get(Card.ElderSign)}</div>
+        <div>{state.revealed.get(Card.ElderSign)}</div>
       </div>
       <p>
         {msg()[0]} {msg()[1]}
       </p>
       <h2>
-        <strong>{players[active].name}</strong>'s turn
+        <strong>{players[active()].name}</strong>'s turn
       </h2>
       <For each={players}>
         {(p, i) => (
@@ -88,7 +87,7 @@ const Round: Component = (props: StageProps) => {
                   <>
                     <button
                       class="card-small"
-                      disabled={p.name === players[active].name || revealing()}
+                      disabled={p.name === players[active()].name || revealing()}
                       onClick={() => choose(p, i())}
                     >
                       ?

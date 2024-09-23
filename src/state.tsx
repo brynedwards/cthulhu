@@ -1,6 +1,7 @@
 import { createContext, useContext, ParentProps } from "solid-js";
 import { Card, Player, TeamEnum } from "./game";
 import { createStore, produce, SetStoreFunction } from "solid-js/store";
+import { Map } from "immutable";
 
 interface State {
   players: Player[];
@@ -30,7 +31,7 @@ const initialState: State = {
   investigators: 0,
   cultists: 0,
   round: 1,
-  revealed: new Map([
+  revealed: Map([
     [Card.Rune, 0],
     [Card.ElderSign, 0],
     [Card.Cthulhu, 0],
@@ -153,8 +154,7 @@ export function StateProvider(props: ParentProps) {
         }),
       );
       setState("revealed", (revealed) => {
-        revealed.set(card, revealed.get(card) + 1);
-        return revealed;
+        return revealed.set(card, revealed.get(card) + 1);
       });
       return card;
     },
