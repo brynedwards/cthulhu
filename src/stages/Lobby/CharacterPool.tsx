@@ -14,45 +14,39 @@ const pools = new Map([
 ]);
 
 export default () => {
-  const {
-    Players,
-    investigatorCount,
-    setInvestigatorCount,
-    cultistCount,
-    setCultistCount,
-  } = useState();
-  const maxPlayers = () => Math.max(1, Players.count());
+  const { setState, state } = useState();
+  const maxPlayers = () => Math.max(1, state.players.length);
   createEffect(() => {
-    let c = Players.count();
+    let c = state.players.length;
     if (c < 4) return;
     const [investigatorCount, cultistCount] = pools.get(c) || [c, c];
-    setInvestigatorCount(investigatorCount);
-    setCultistCount(cultistCount);
+    setState("investigators", investigatorCount);
+    setState("cultists", cultistCount);
   });
   return (
     <>
       <h2>Character Pool</h2>
       <div style="margin-top: var(--size-3)">
-        <label for="investigators">Investigators: {investigatorCount()}</label>
+        <label for="investigators">Investigators: {state.investigators}</label>
       </div>
       <RangeInput
         id="investigators"
-        value={investigatorCount()}
+        value={state.investigators}
         min={0}
         max={maxPlayers()}
         disabled={maxPlayers() < 4}
-        bind={setInvestigatorCount}
+        bind={(val) => setState("investigators", val)}
       />
       <div style="margin-top: var(--size-3)">
-        <label for="cultists">Cultists: {cultistCount()}</label>
+        <label for="cultists">Cultists: {state.cultists}</label>
       </div>
       <RangeInput
         id="cultists"
-        value={cultistCount()}
+        value={state.cultists}
         min={0}
         max={maxPlayers()}
         disabled={maxPlayers() < 4}
-        bind={setCultistCount}
+        bind={(val) => setState("cultists", val)}
       />
     </>
   );

@@ -5,11 +5,12 @@ import { TeamEnum } from "../game";
 import { debug, toCssClass } from "../util";
 
 const Reveal: Component = (props: StageProps) => {
-  const { Players, Round } = useState();
+  const { state } = useState();
+  const { players, round } = state;
   const [index, setIndex] = createSignal(0);
   const [revealed, setRevealed] = createSignal(false);
-  const currentPlayer = () => Players.get()[index()];
-  const n = () => (currentPlayer().team() === TeamEnum.Investigator ? "n" : "");
+  const currentPlayer = () => players[index()];
+  const n = () => (currentPlayer().team === TeamEnum.Investigator ? "n" : "");
 
   function next() {
     setRevealed(false);
@@ -21,7 +22,6 @@ const Reveal: Component = (props: StageProps) => {
   }
 
   const still = () => {
-    const round = Round.current();
     if (round === 2) return "(still) ";
     if (round === 3) return "(still?!?!) ";
     return "";
@@ -29,7 +29,7 @@ const Reveal: Component = (props: StageProps) => {
 
   return (
     <>
-      <h1>ROUND {Round.current()}</h1>
+      <h1>ROUND {round}</h1>
       <p style={revealed() ? "visibility: hidden" : ""}>
         Please pass the device to
       </p>
@@ -41,18 +41,16 @@ const Reveal: Component = (props: StageProps) => {
         <p>
           You are {still()}a{n()}{" "}
         </p>
-        <h2 class={toCssClass(currentPlayer().team())}>
-          {currentPlayer().team()}
-        </h2>
+        <h2 class={toCssClass(currentPlayer().team)}>{currentPlayer().team}</h2>
         <p>Your cards are</p>
         <div class="reveal-card-list">
-          <For each={currentPlayer().Cards.get()}>
+          <For each={currentPlayer().cards}>
             {(c) => <strong class={toCssClass(c)}>{c}</strong>}
           </For>
         </div>
       </div>
       <Show
-        when={index() < Players.count() - 1}
+        when={index() < players.length - 1}
         fallback={
           <button disabled={!revealed()} onClick={() => play()}>
             Play

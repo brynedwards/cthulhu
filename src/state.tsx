@@ -1,187 +1,185 @@
-import { Map } from "immutable";
-import {
-  createSignal,
-  createContext,
-  useContext,
-  ParentProps,
-  Setter,
-  Accessor,
-} from "solid-js";
-import { Card, Player, TeamEnum, newPlayer } from "./game";
+import { createContext, useContext, ParentProps } from "solid-js";
+import { Card, Player, TeamEnum } from "./game";
+import { createStore, produce, SetStoreFunction } from "solid-js/store";
 
 interface State {
-  Players: {
-    get: Accessor<Player[]>;
-    count: () => number;
-    add: (name: string) => void;
-    remove: (index: number) => void;
-    active: () => Player | null;
-    setActive: Setter<number>;
-  };
-  investigatorCount: Accessor<number>;
-  setInvestigatorCount: Setter<number>;
-  cultistCount: Accessor<number>;
-  setCultistCount: Setter<number>;
-  initialise: () => void;
-  reset: () => void;
-  Round: {
-    current: Accessor<number>;
-    next: () => void;
-  };
-  Revealed: {
-    cthulhu: Accessor<number>;
-    runes: Accessor<number>;
-    elderSigns: Accessor<number>;
-    add: (c: Card) => void;
-  };
+  players: Player[];
+  investigators: number;
+  cultists: number;
+  round: number;
+  revealed: Map<Card, number>;
+  active: number;
 }
 
-const StateContext = createContext<State>();
+interface Context {
+  active: () => number;
+  addPlayer: (name: string) => void;
+  cultists: () => number;
+  initialise: VoidFunction;
+  investigators: () => number;
+  removeCardFrom: (idx: number) => Card;
+  removePlayer: (idx: number) => void;
+  reset: VoidFunction;
+  round: () => number;
+  setState: SetStoreFunction<State>;
+  state: State;
+}
 
-export function StateProvider(props: ParentProps<State>) {
-  const [players, setPlayers] = createSignal([]);
-  const playerCount = () => players().length;
-  const [investigatorCount, setInvestigatorCount] = createSignal(0);
-  const [cultistCount, setCultistCount] = createSignal(0);
-  const [activePlayerIndex, setActivePlayerIndex] = createSignal(null);
-  const [round, setRound] = createSignal(1);
-  const [playedCards, setPlayedCards] = createSignal(
-    Map({ [Card.Rune]: 0, [Card.ElderSign]: 0, [Card.Cthulhu]: 0 }),
-  );
+const initialState: State = {
+  players: [],
+  investigators: 0,
+  cultists: 0,
+  round: 1,
+  revealed: new Map([
+    [Card.Rune, 0],
+    [Card.ElderSign, 0],
+    [Card.Cthulhu, 0],
+  ]),
+  active: 0,
+};
+
+const defaultPlayer: Player = {
+  name: "",
+  team: null,
+  cards: [],
+};
+
+const StateContext = createContext<Context>();
+
+export function StateProvider(props: ParentProps) {
+  const [state, setState] = createStore<State>(initialState);
+  const { revealed } = state;
 
   function shuffle() {
     // Get all existing cards
     let cards: Card[] = [];
-    players().forEach((p) => {
-      cards = cards.concat(p.Cards.get());
-      p.Cards.clear();
+    setState("players", (players) => {
+      players.forEach((p) => {
+        cards = cards.concat(p.cards);
+      });
+      return players.map((p) => ({ ...p, cards: [] }));
     });
 
     let cthulhu = 1;
-    let elderSigns = playerCount() - playedCards().get(Card.ElderSign);
-    let runes = playerCount() * 4 - 1 - playedCards().get(Card.Rune);
+    let playerCount = state.players.length;
+    let elderSigns = playerCount - revealed.get(Card.ElderSign);
+    let runes = playerCount * 4 - 1 - revealed.get(Card.Rune);
     let totalCards = () => cthulhu + elderSigns + runes;
 
-    players().forEach((p) => {
-      for (var i = 0; i < 5 - round(); i++) {
-        const r = Math.random() * totalCards();
-        if (r > runes + elderSigns) {
-          cthulhu -= 1;
-          p.Cards.add(Card.Cthulhu);
-        } else if (r > runes) {
-          elderSigns -= 1;
-          p.Cards.add(Card.ElderSign);
-        } else {
-          runes -= 1;
-          p.Cards.add(Card.Rune);
+    setState("players", (players) => {
+      players.forEach((p) => {
+        for (var i = 0; i < 5 - state.round; i++) {
+          const r = Math.random() * totalCards();
+          if (r > runes + elderSigns) {
+            cthulhu -= 1;
+            p.cards.push(Card.Cthulhu);
+          } else if (r > runes) {
+            elderSigns -= 1;
+            p.cards.push(Card.ElderSign);
+          } else {
+            runes -= 1;
+            p.cards.push(Card.Rune);
+          }
         }
-      }
+      });
+      return players;
     });
   }
 
   const initialise = () => {
     // Set player teams and starting hand
-    let investigatorCards = investigatorCount();
-    let cultistCards = cultistCount();
+    let investigatorCards = state.investigators;
+    let cultistCards = state.cultists;
     let cthulhu = 1;
-    let elderSigns = playerCount();
-    let runes = playerCount() * 4 - 1;
+    let elderSigns = state.players.length;
+    let runes = state.players.length * 4 - 1;
     let totalCards = () => cthulhu + elderSigns + runes;
-    players().forEach((p) => {
-      const r = Math.random() * (investigatorCards + cultistCards);
-      if (r > investigatorCards) {
-        cultistCards -= 1;
-        p.setTeam(TeamEnum.Cultist);
-      } else {
-        investigatorCards -= 1;
-        p.setTeam(TeamEnum.Investigator);
-      }
 
-      for (var i = 0; i < 5; i++) {
-        const r = Math.random() * totalCards();
-        if (r > runes + elderSigns) {
-          cthulhu -= 1;
-          p.Cards.add(Card.Cthulhu);
-        } else if (r > runes) {
-          elderSigns -= 1;
-          p.Cards.add(Card.ElderSign);
+    setState("players", (players) => {
+      return players.map((p) => {
+        const r = Math.random() * (investigatorCards + cultistCards);
+        if (r > investigatorCards) {
+          cultistCards -= 1;
+          p.team = TeamEnum.Cultist;
         } else {
-          runes -= 1;
-          p.Cards.add(Card.Rune);
+          investigatorCards -= 1;
+          p.team = TeamEnum.Investigator;
         }
-      }
+
+        const cards = [];
+        for (var i = 0; i < 5; i++) {
+          const r = Math.random() * totalCards();
+          if (r > runes + elderSigns) {
+            cthulhu -= 1;
+            cards.push(Card.Cthulhu);
+          } else if (r > runes) {
+            elderSigns -= 1;
+            cards.push(Card.ElderSign);
+          } else {
+            runes -= 1;
+            cards.push(Card.Rune);
+          }
+        }
+        return { ...p, cards };
+      });
     });
 
     // Pick a random player to start
-    setActivePlayerIndex(Math.floor(Math.random() * playerCount()));
+    setState("active", Math.floor(Math.random() * state.players.length));
   };
 
-  const reset = () => {
-    players().forEach((p: Player) => {
-      p.setTeam(null);
-      p.Cards.clear();
-    });
-    setActivePlayerIndex(null);
-    setRound(1);
-    setPlayedCards(
-      Map({ [Card.Rune]: 0, [Card.ElderSign]: 0, [Card.Cthulhu]: 0 }),
-    );
-  };
-
-  const state = {
-    Players: {
-      get: players,
-      count() {
-        return players().length;
-      },
-      add(name: string) {
-        setPlayers([...players(), newPlayer(name)]);
-      },
-      remove(index: number) {
-        setPlayers(players().filter((_e, i) => index !== i));
-      },
-      active() {
-        if (activePlayerIndex() === null) return null;
-        return players()[activePlayerIndex()];
-      },
-      setActive: setActivePlayerIndex,
+  const context: Context = {
+    active() {
+      return state.active;
     },
-    investigatorCount,
-    setInvestigatorCount,
-    cultistCount,
-    setCultistCount,
+    addPlayer(name) {
+      setState("players", state.players.length, { ...defaultPlayer, name });
+    },
+    cultists() {
+      return state.cultists;
+    },
     initialise,
-    reset,
-    Round: {
-      current: round,
-      next() {
-        shuffle();
-        setRound(round() + 1);
-      },
+    investigators() {
+      return state.investigators;
     },
-    Revealed: {
-      cthulhu() {
-        return playedCards().get(Card.Cthulhu);
-      },
-      runes() {
-        return playedCards().get(Card.Rune);
-      },
-      elderSigns() {
-        return playedCards().get(Card.ElderSign);
-      },
-      add(c: Card) {
-        setPlayedCards(playedCards().update(c, (value) => value + 1));
-      },
+    removeCardFrom(idx) {
+      const r = Math.floor(Math.random() * state.players[idx].cards.length);
+      const card = state.players[idx].cards[r];
+      setState(
+        "players",
+        idx,
+        produce((player) => {
+          player.cards = player.cards.filter((_, i) => r !== i);
+        }),
+      );
+      setState("revealed", (revealed) => {
+        revealed.set(card, revealed.get(card) + 1);
+        return revealed;
+      });
+      return card;
     },
+    removePlayer(idx) {
+      setState("players", (players) =>
+        players.filter((_p: Player, i: number) => idx !== i),
+      );
+    },
+    reset() {
+      setState(initialState);
+    },
+    round() {
+      return state.round;
+    },
+    setState,
+    state,
   };
 
   return (
-    <StateContext.Provider value={state}>
+    <StateContext.Provider value={context}>
       {props.children}
     </StateContext.Provider>
   );
 }
 
-export function useState(): State {
+export function useState(): Context {
   return useContext(StateContext);
 }

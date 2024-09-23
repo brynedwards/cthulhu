@@ -5,7 +5,7 @@ import { useState } from "./state";
 import { debug } from "./util";
 
 const App: Component = () => {
-  const { Players, reset } = useState();
+  const { reset, state } = useState();
   const [stage, setStage] = createSignal(Stage.Lobby);
   const [exiting, setExiting] = createSignal(false);
 
@@ -49,10 +49,10 @@ const App: Component = () => {
         <pre>DEBUG</pre>
         <pre>
           {JSON.stringify(
-            Players.get().map((p) => ({
+            state.players.map((p) => ({
               name: p.name,
-              team: p.team(),
-              cards: p.Cards.get(),
+              team: p.team,
+              cards: p.cards,
             })),
             null,
             2,

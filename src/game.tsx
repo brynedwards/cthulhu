@@ -15,32 +15,6 @@ export enum Card {
 
 export interface Player {
   name: string;
-  team: Accessor<Team>;
-  setTeam: Setter<Team>;
-  Cards: {
-    get: Accessor<Card[]>;
-    add: (c: Card) => void;
-    pop: (i: number) => Card;
-    clear: () => void;
-  };
-}
-
-export function newPlayer(name: string): Player {
-  const [team, setTeam] = createSignal<Team>(null);
-  const [cards, setCards] = createSignal([]);
-  const Cards = {
-    get: cards,
-    add(c: Card) {
-      setCards([...cards(), c]);
-    },
-    pop(i: number): Card {
-      const card = cards()[i];
-      setCards(cards().filter((_e, ind: number) => i !== ind));
-      return card;
-    },
-    clear() {
-      setCards([]);
-    },
-  };
-  return { name, team, setTeam, Cards };
+  team: Team;
+  cards: Card[];
 }

@@ -1,12 +1,10 @@
-import { Setter, createEffect } from "solid-js";
-
 interface Props {
   id: string;
   value: number;
   min: number;
   max: number;
   disabled: boolean;
-  bind: Setter<number>;
+  bind: (val: number) => void;
 }
 
 export default (props: Props) => {

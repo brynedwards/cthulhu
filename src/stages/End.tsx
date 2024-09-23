@@ -1,26 +1,25 @@
 import { Component, For, Show, createSignal } from "solid-js";
 import { StageProps } from ".";
 import { useState } from "../state";
-import { TeamEnum } from "../game";
+import { Card, TeamEnum } from "../game";
 import { toCssClass } from "../util";
 
 const End: Component = (_props: StageProps) => {
   const [msg, setMsg] = createSignal("???");
-  const { Players, Revealed, Round } = useState();
-  const investigators = Players.get().filter(
-    (p) => p.team() === TeamEnum.Investigator,
-  );
-  const cultists = Players.get().filter((p) => p.team() === TeamEnum.Cultist);
+  const { round, state } = useState();
+  const { players, revealed } = state;
+  const investigators = players.filter((p) => p.team === TeamEnum.Investigator);
+  const cultists = players.filter((p) => p.team === TeamEnum.Cultist);
   const winner = (() => {
-    if (Revealed.cthulhu()) {
+    if (revealed.get(Card.Cthulhu)) {
       setMsg("Cthulhu has been unleashed!");
       return TeamEnum.Cultist;
     }
-    if (Round.current() > 4) {
+    if (round() > 4) {
       setMsg("The investigators ran out of time!");
       return TeamEnum.Cultist;
     }
-    if (Revealed.elderSigns() === Players.count()) {
+    if (revealed.get(Card.ElderSign) === players.length) {
       setMsg("All the Elder Signs were revealed!");
       return TeamEnum.Investigator;
     }

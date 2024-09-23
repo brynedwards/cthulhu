@@ -1,14 +1,18 @@
-import { type Component, For, Show, type Setter } from "solid-js";
+import { type Component, createEffect, For, Show } from "solid-js";
 import CharacterPool from "./CharacterPool";
 import { useState } from "../../state";
-import { Stage } from "..";
+import { Stage, StageProps } from "..";
 
-interface Props {
-  setStage: Setter<Stage>;
-}
-
-const Lobby: Component = (props: Props) => {
-  const { Players, investigatorCount, cultistCount, initialise } = useState();
+const Lobby: Component = (props: StageProps) => {
+  const {
+    addPlayer,
+    cultists,
+    initialise,
+    investigators,
+    removePlayer,
+    state,
+  } = useState();
+  const { players } = state;
 
   function start() {
     initialise();
@@ -23,21 +27,18 @@ const Lobby: Component = (props: Props) => {
       alert("Enter a name to add!");
       return;
     }
-    if (
-      Players.get()
-        .map((p) => p.name)
-        .indexOf(name) > -1
-    ) {
+    if (players.map((p) => p.name).indexOf(name) > -1) {
       alert(`${name} has already been added!`);
       return;
     }
-    Players.add(name);
+    addPlayer(name);
     nameInput.value = "";
   }
 
   function remove(index: number) {
-    Players.remove(index);
+    removePlayer(index);
   }
+
   return (
     <>
       <h1>Don't Mess With Cthulhu!</h1>
@@ -47,9 +48,9 @@ const Lobby: Component = (props: Props) => {
       </p>
       <CharacterPool />
       <h3 style="margin-top: var(--size-4)">Players</h3>
-      <Show when={Players.get().length > 0}>
+      <Show when={players.length > 0}>
         <div class="player-list">
-          <For each={Players.get()}>
+          <For each={players}>
             {(p, index) => (
               <>
                 <div style="font-size: 1.5rem">
@@ -63,18 +64,17 @@ const Lobby: Component = (props: Props) => {
           </For>
         </div>
       </Show>
-      <Show when={Players.count() < 4}>
+      <Show when={players.length < 4}>
         <p style="color: red">
           <strong>
-            Need {4 - Players.count()} more player
-            {4 - Players.count() !== 1 ? "s" : ""}
+            Need {4 - players.length} more player
+            {4 - players.length !== 1 ? "s" : ""}
           </strong>
         </p>
       </Show>
       <Show
         when={
-          Players.count() >= 4 &&
-          investigatorCount() + cultistCount() < Players.count()
+          players.length >= 4 && investigators() + cultists() < players.length
         }
       >
         <p style="color: red">
@@ -98,7 +98,7 @@ const Lobby: Component = (props: Props) => {
       <button
         class="green"
         style="margin-top: var(--size-1)"
-        disabled={Players.count() < 4}
+        disabled={players.length < 4}
         onClick={() => start()}
       >
         Start
