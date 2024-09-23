@@ -6,7 +6,7 @@ import { Stage, StageProps } from ".";
 
 const verbs = ["found", "discovered", "unearthed"];
 const Round: Component = (props: StageProps) => {
-  const { active, removeCardFrom, setState, state } = useState();
+  const { active, removeCardFrom, setState, shuffle, state } = useState();
   const { players, round } = state;
   const [msg, setMsg] = createSignal(["", ""]);
   const [turn, setTurn] = createSignal(1);
@@ -40,6 +40,7 @@ const Round: Component = (props: StageProps) => {
     setTurn(turn() + 1);
     if (turn() === players.length + 1) {
       setState("round", (n) => n + 1);
+      shuffle();
       if (round > 4) {
         // Cultists win
         props.setStage(Stage.End);

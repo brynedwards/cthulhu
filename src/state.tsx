@@ -23,6 +23,7 @@ interface Context {
   reset: VoidFunction;
   round: () => number;
   setState: SetStoreFunction<State>;
+  shuffle: VoidFunction;
   state: State;
 }
 
@@ -68,22 +69,23 @@ export function StateProvider(props: ParentProps) {
     let totalCards = () => cthulhu + elderSigns + runes;
 
     setState("players", (players) => {
-      players.forEach((p) => {
+      return players.map((p) => {
+        const cards = [];
         for (var i = 0; i < 5 - state.round; i++) {
           const r = Math.random() * totalCards();
           if (r > runes + elderSigns) {
             cthulhu -= 1;
-            p.cards.push(Card.Cthulhu);
+            cards.push(Card.Cthulhu);
           } else if (r > runes) {
             elderSigns -= 1;
-            p.cards.push(Card.ElderSign);
+            cards.push(Card.ElderSign);
           } else {
             runes -= 1;
-            p.cards.push(Card.Rune);
+            cards.push(Card.Rune);
           }
         }
+        return { ...p, cards };
       });
-      return players;
     });
   }
 
@@ -170,6 +172,7 @@ export function StateProvider(props: ParentProps) {
       return state.round;
     },
     setState,
+    shuffle,
     state,
   };
 
